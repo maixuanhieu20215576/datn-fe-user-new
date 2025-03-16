@@ -11,11 +11,6 @@ import Badge from "../../ui/badge/Badge";
 import { constants } from "../../../constant";
 import axios from "axios";
 import moment from "moment";
-import { useModal } from "../../../hooks/useModal";
-import { Modal } from "../../ui/modal";
-import Label from "../../form/Label";
-import Input from "../../form/input/InputField";
-import Button from "../../ui/button/Button";
 import Select from "../../form/Select";
 
 interface ApplicationForm {
@@ -66,74 +61,23 @@ const fetchApplicationForm = async ({
   return response.data;
 };
 
-const updateApplicationFormStatus = async ({
-  updateStatus,
-  applicationFormId,
-}: {
-  updateStatus: ApplicationForm["status"];
-  applicationFormId: string;
-}) => {
-  await axios.post(
-    `${import.meta.env.VITE_API_URL}/admin/update-application-form-status`,
-    {
-      updateStatus,
-      applicationFormId,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-};
 
 export default function ApplicationFormTable() {
   const user = JSON.parse(localStorage.getItem("user") || "");
 
-  const statusOptions = [
-    { value: "Pending", label: "Chờ phê duyệt" },
-    { value: "Approved", label: "Chấp nhận" },
-    { value: "Rejected", label: "Từ chối" },
-  ];
-
-  const statusByVietnamese: Record<ApplicationForm["status"], string> = {
-    Pending: "Chờ xét duyệt",
-    Approved: "Đã chấp nhận",
-    Rejected: "Đã từ chối",
-  };
 
   const [applicationForms, setApplicationForms] = React.useState<
     ApplicationForm[]
   >([]);
   const [rowsPerPage] = React.useState<number>(10);
   const [page] = React.useState<number>(1);
-  const { isOpen, openModal, closeModal } = useModal();
-  const [selectedApplicationForm, setSelectedApplicationForm] =
-    React.useState<ApplicationForm>();
 
   const [filteredApplicationForm, setFilteredApplicationForm] = React.useState<
     ApplicationForm[]
   >([]);
 
-  const handleSave = async () => {
-    await updateApplicationFormStatus({
-      updateStatus: selectedApplicationForm?.status || "Pending",
-      applicationFormId: selectedApplicationForm?._id || "",
-    });
-    closeModal();
-  };
 
-  const openEditApplication = (applicationForm: ApplicationForm) => {
-    setSelectedApplicationForm(applicationForm);
-    openModal();
-  };
 
-  const handleStatusSelectChange = (value: string) => {
-    if (selectedApplicationForm) {
-      selectedApplicationForm.status = value as ApplicationForm["status"];
-      setSelectedApplicationForm({ ...selectedApplicationForm });
-    }
-  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -262,102 +206,6 @@ export default function ApplicationFormTable() {
               )}
             </TableBody>
           </Table>
-          <Modal
-            isOpen={isOpen}
-            onClose={closeModal}
-            className="max-w-[700px] m-4"
-          >
-            <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-              <div className="px-2 pr-14">
-                <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                  Chi tiết đơn đăng ký
-                </h4>
-                <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                  Hợp tác với những ứng viên đầy triển vọng !{" "}
-                </p>
-              </div>
-              <form className="flex flex-col">
-                <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-                  <div>
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                      <div>
-                        <Label>Họ và tên</Label>
-                        <Input
-                          type="text"
-                          className="bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-400 disabled:opacity-100 disabled:cursor-not-allowed"
-                          disabled
-                          value={selectedApplicationForm?.fullName}
-                        />
-                      </div>
-
-                      <div>
-                        <Label>Loại hợp đồng</Label>
-                        <Input
-                          type="text"
-                          className="bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-400 disabled:opacity-100 disabled:cursor-not-allowed"
-                          disabled
-                          value={selectedApplicationForm?.teachingCommitment}
-                        />
-                      </div>
-
-                      <div>
-                        <Label>Kỹ năng ngoại ngữ</Label>
-                        <Input
-                          className="bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-400 disabled:opacity-100 disabled:cursor-not-allowed"
-                          disabled
-                          value={selectedApplicationForm?.languageSkills}
-                        />
-                      </div>
-                      <div>
-                        <Label>Ngày đăng ký</Label>
-                        <Input
-                          type="text"
-                          className="bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-400 disabled:opacity-100 disabled:cursor-not-allowed"
-                          disabled
-                          value={moment(
-                            selectedApplicationForm?.createdAt
-                          ).format("DD/MM/YYYY")}
-                        />
-                      </div>
-                      <div>
-                        <Label>Hồ sơ</Label>
-                        <a
-                          href={selectedApplicationForm?.CV}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-400 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          {selectedApplicationForm?.CV.slice(0, 34) + "..."}
-                        </a>
-                      </div>
-                      <div>
-                        <Label>Trạng thái</Label>
-                        <Select
-                          options={statusOptions}
-                          placeholder={
-                            statusByVietnamese[
-                              selectedApplicationForm?.status || "Pending"
-                            ] ?? "Chưa có trạng thái"
-                          }
-                          onChange={(option) =>
-                            handleStatusSelectChange(option)
-                          } // Truyền đối tượng đúng vào hàm
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                  <Button size="sm" variant="outline" onClick={closeModal}>
-                    Close
-                  </Button>
-                  <Button size="sm" onClick={handleSave}>
-                    Save Changes
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </Modal>
         </div>
       </div>
     </div>
