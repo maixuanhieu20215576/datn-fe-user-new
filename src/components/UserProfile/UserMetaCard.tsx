@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
-import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
@@ -8,6 +7,7 @@ import moment from "moment";
 import { FC } from "react";
 import imageCompression from "browser-image-compression";
 import axios from "axios";
+import { Modal } from "../../components/ui/modal/index";
 
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();

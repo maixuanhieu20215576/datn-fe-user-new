@@ -8,6 +8,8 @@ import {
   HorizontaLDots,
   ListIcon,
   UserCircleIcon,
+  TaskIcon,
+  PencilIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -34,6 +36,22 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Thông tin người dùng",
     path: "/profile",
+  },
+  {
+    icon: <TaskIcon />,
+    name: "Khóa học",
+    subItems: [
+      { name: "Tất cả khóa học", path: "/course" },
+      { name: "Khóa học của bạn", path: "/your-course" },
+    ],
+  },
+  {
+    icon: <PencilIcon />,
+    name: "Lớp học",
+    subItems: [
+      { name: "Tìm kiếm lớp", path: "/class" },
+      { name: "Bắt đầu vào lớp", path: "/your-class" },
+    ],
   },
   {
     icon: <ListIcon />,

@@ -20,6 +20,11 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ApplicationForms from "./pages/Forms/ApplicationForms";
 import ApplicationForm from "./pages/ApplicationForm";
+import Course from "./pages/Course";
+import CourseDetail from "./pages/Course/CourseDetail";
+import YourCourse from "./pages/Course/YourCourse";
+import Class from "./pages/Class/Class";
+import ClassDetail from "./pages/Class/ClassDetail";
 
 export default function App() {
   return (
@@ -54,6 +59,13 @@ export default function App() {
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
+
+            <Route path="/course" element={<Course />} />
+            <Route path="/course/:id" element={<CourseDetail />} />
+
+            <Route path='/your-course' element={<YourCourse />} />
+            <Route path="/class" element={<Class />} />
+            <Route path="/class-detail/:id" element={<ClassDetail />} />
           </Route>
 
           {/* Auth Layout */}

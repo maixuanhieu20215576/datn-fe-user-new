@@ -22,6 +22,8 @@ export default function ApplicationForm() {
   const [teachingCommitment, setTeachingCommitment] = useState<string>("");
   const [teachingLanguage, setTeachingLanguage] = useState<string[]>([]);
   const [languageSkills, setLanguageSkills] = useState<string>("");
+  const [bankAccountNumber, setBankAccountNumber] = useState<string>("");
+  const [bankName, setBankName] = useState<string>("");
   const [fileError, setFileError] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [CV, setCV] = useState<File>();
@@ -73,6 +75,8 @@ export default function ApplicationForm() {
     formData.append("teachingCommitment", teachingCommitment);
     formData.append("teachingLanguage", teachingLanguage.join(","));
     formData.append("languageSkills", languageSkills);
+    formData.append("bankAccountNumber", bankAccountNumber);
+    formData.append("bankName", bankName);
     if (CV) {
       formData.append("file", CV);
     }
@@ -188,6 +192,30 @@ export default function ApplicationForm() {
               thước tối đa 5MB.
             </p>
           )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>
+                Số tài khoản <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Input
+                type="text"
+                placeholder="Số tài khoản"
+                value={bankAccountNumber}
+                onChange={(e) => setBankAccountNumber(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>
+                Tên ngân hàng <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Input
+                type="text"
+                placeholder="Tên ngân hàng"
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+              />
+            </div>
+          </div>
           <div className="flex items-center gap-3">
             <Checkbox
               className="w-5 h-5"
