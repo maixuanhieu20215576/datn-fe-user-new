@@ -15,7 +15,7 @@ export default function Images() {
       <PageBreadcrumb pageTitle="Images" />
       <div className="space-y-5 sm:space-y-6">
         <ComponentCard title="Responsive image">
-          <ResponsiveImage />
+          <ResponsiveImage src="https://tailadmin.com/assets/images/dashboard/responsive-image.png" alt="Responsive image" />
         </ComponentCard>
         <ComponentCard title="Image in 2 Grid">
           <TwoColumnImageGrid />
