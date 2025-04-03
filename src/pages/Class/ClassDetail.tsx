@@ -177,7 +177,13 @@ export default function ClassDetail() {
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 dark:disabled:bg-gray-600"
                         disabled={classData.status !== "open"}
                     >
-                        {classData.status === "open" ? isRegistered ? "Đã đăng ký, vào học ngay ? 🤔" : "Đăng ký ngay" : "Lớp đã đóng"}
+                        {classData.status === "open"
+                            ? isRegistered
+                                ? "Đã đăng ký, vào học ngay thôi! 💯"
+                                : classData.currentStudent === classData.maxStudent
+                                    ? "Lớp đã đầy, không thể đăng ký 😓"
+                                    : "Đăng ký ngay"
+                            : "Lớp đã đóng"}
                     </button>
                 </div>
             </div>
