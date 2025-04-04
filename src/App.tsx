@@ -26,6 +26,7 @@ import YourCourse from "./pages/Course/YourCourse";
 import Class from "./pages/Class/Class";
 import ClassDetail from "./pages/Class/ClassDetail";
 import YourClass from "./pages/Class/YourClass";
+import TeacherStatistics from "./pages/TeacherStatistics";
 
 export default function App() {
   return (
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="/class" element={<Class />} />
             <Route path="/class-detail/:id" element={<ClassDetail />} />
             <Route path="/your-class" element={<YourClass />} />
+            <Route path="/teacher-statistics" element={<TeacherStatistics />} />
           </Route>
 
           {/* Auth Layout */}
