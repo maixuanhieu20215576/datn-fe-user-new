@@ -3,7 +3,6 @@ import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getUserIdFromLocalStorage, useDeviceQueries } from "../../components/common/utils";
-import { useNavigate } from "react-router";
 import { constants } from "../../components/common/constants";
 
 const ClassCard = ({
@@ -13,7 +12,7 @@ const ClassCard = ({
     buttonLabel,
     language,
     currentStudent,
-    classId,
+    classUrl,
 }: {
     image: string | undefined;
     title: string | undefined;
@@ -22,8 +21,8 @@ const ClassCard = ({
     buttonLabel: string;
     currentStudent: number | undefined;
     classId: string | undefined;
+    classUrl: string;
 }) => {
-    const navigate = useNavigate();
     return (
         <div className="flex items-center bg-white rounded-xl shadow p-4 mb-4">
             <img
@@ -87,7 +86,7 @@ const ClassCard = ({
                 </div>
                 <button
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-                    onClick={() => navigate(`/class-detail/${classId}`)}
+                    onClick={() => window.open(classUrl, '_blank')}
                 >
                     {buttonLabel}
                 </button>
@@ -202,6 +201,7 @@ export default function YourClass() {
                             }
                             currentStudent={cls.currentStudent}
                             classId={cls._id}
+                            classUrl={cls.classUrl}
                         />
                     ))}
                 </div>

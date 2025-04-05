@@ -11,7 +11,6 @@ import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
-import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
@@ -28,6 +27,7 @@ import ClassDetail from "./pages/Class/ClassDetail";
 import YourClass from "./pages/Class/YourClass";
 import TeacherStatistics from "./pages/Teacher/TeacherStatistics";
 import TeacherProfile from "./pages/Teacher/TeacherProfile";
+import ClassCalendar from "./pages/Class/ClassCalendar";
 
 export default function App() {
   return (
@@ -41,7 +41,6 @@ export default function App() {
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
-            <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
 
             {/* Forms */}
@@ -72,6 +71,7 @@ export default function App() {
             <Route path="/your-class" element={<YourClass />} />
             <Route path="/teacher-statistics" element={<TeacherStatistics />} />
             <Route path="/teacher-profile/:teacherId" element={<TeacherProfile />} />
+            <Route path="/class-calendar" element={<ClassCalendar />} />
           </Route>
 
           {/* Auth Layout */}
