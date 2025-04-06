@@ -13,6 +13,9 @@ const ClassCard = ({
     language,
     currentStudent,
     classUrl,
+    followingClassTime,
+    canJoinClass,
+    classId,
 }: {
     image: string | undefined;
     title: string | undefined;
@@ -22,7 +25,16 @@ const ClassCard = ({
     currentStudent: number | undefined;
     classId: string | undefined;
     classUrl: string;
+    followingClassTime: string;
+    canJoinClass: boolean,
 }) => {
+    const handleClickClass = () => {
+        window.open(classUrl, '_blank');
+        axios.post(`${import.meta.env.VITE_API_URL}/user/attendance-check`, {
+            classId: classId,
+            userId: getUserIdFromLocalStorage(),
+        });
+    }
     return (
         <div className="flex items-center bg-white rounded-xl shadow p-4 mb-4">
             <img
@@ -84,9 +96,27 @@ const ClassCard = ({
                     </svg>
                     Số học viên đã đăng ký: {currentStudent}
                 </div>
+                <div className="text-sm text-red-500 flex items-center gap-2 mb-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        className="size-6"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                    </svg>
+                    Buổi học sắp tới: {followingClassTime}
+                </div>
                 <button
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-                    onClick={() => window.open(classUrl, '_blank')}
+                    className={`bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition ${!canJoinClass ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={handleClickClass}
+                    disabled={!canJoinClass}
                 >
                     {buttonLabel}
                 </button>
@@ -99,22 +129,13 @@ interface Class {
     _id: string;
     teacherId: string;
     teacherName: string;
-    maxStudent?: number;
     currentStudent?: number;
     language: string;
-    level?: string;
-    price: number;
-    priceType: string;
-    status?: string;
-    schedule?: {
-        date?: string;
-        timeFrom: string;
-        timeTo: string;
-    }[];
     classUrl: string;
-    classType: string;
     thumbnail?: string;
     className?: string;
+    followingClassTime: string,
+    canJoinClass: boolean,
 }
 
 export default function YourClass() {
@@ -143,7 +164,6 @@ export default function YourClass() {
                 description="EzLearn - Lớp học của bạn"
             />
             <PageBreadcrumb pageTitle="Lớp học của bạn" />
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
             <div
                 style={{
                     display: "flex",
@@ -153,36 +173,6 @@ export default function YourClass() {
                     marginBottom: "16px",
                 }}
             >
-                {/*  <DemoContainer components={["DatePicker"]}>
-            <DemoItem>
-              <DatePicker
-                value={date}
-                onChange={(newValue) => {
-                  if (newValue) setDate(newValue);
-                }}
-              />
-            </DemoItem>
-          </DemoContainer>
-          <DemoContainer components={["TimePicker"]}>
-            <DemoItem>
-              <TimePicker
-                value={timeFrom}
-                onChange={(newValue) => setTimeFrom(newValue)}
-                label="Giờ bắt đầu"
-              />
-            </DemoItem>
-          </DemoContainer>
-          <DemoContainer components={["TimePicker"]}>
-            <DemoItem>
-              <TimePicker
-                value={timeTo}
-                onChange={(newValue) => setTimeTo(newValue)}
-                label="Giờ tan học"
-
-              />
-            </DemoItem>
-          </DemoContainer>
-          */}
                 <div>
                     {classes.map((cls, index) => (
                         <ClassCard
@@ -202,6 +192,8 @@ export default function YourClass() {
                             currentStudent={cls.currentStudent}
                             classId={cls._id}
                             classUrl={cls.classUrl}
+                            followingClassTime={cls.followingClassTime}
+                            canJoinClass={cls.canJoinClass}
                         />
                     ))}
                 </div>

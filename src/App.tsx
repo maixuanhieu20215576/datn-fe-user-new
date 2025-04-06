@@ -28,15 +28,18 @@ import YourClass from "./pages/Class/YourClass";
 import TeacherStatistics from "./pages/Teacher/TeacherStatistics";
 import TeacherProfile from "./pages/Teacher/TeacherProfile";
 import ClassCalendar from "./pages/Class/ClassCalendar";
+import { getUserIdFromLocalStorage } from "./components/common/utils";
 
 export default function App() {
+  const userId = getUserIdFromLocalStorage();
+
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
+          <Route element={userId ? <AppLayout /> : <SignIn />}>
             <Route index path="/" element={<Home />} />
 
             {/* Others Page */}
@@ -65,7 +68,7 @@ export default function App() {
             <Route path="/course" element={<Course />} />
             <Route path="/course/:id" element={<CourseDetail />} />
 
-            <Route path='/your-course' element={<YourCourse />} />
+            <Route path="/your-course" element={<YourCourse />} />
             <Route path="/class" element={<Class />} />
             <Route path="/class-detail/:id" element={<ClassDetail />} />
             <Route path="/your-class" element={<YourClass />} />

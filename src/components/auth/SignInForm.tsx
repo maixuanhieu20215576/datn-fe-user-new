@@ -32,12 +32,10 @@ export default function SignInForm() {
         const { accessToken, user } = loginResponse.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        if (user.role === "student") {
-          console.log(1);
+        if (user.role === "student" || user.role === "teacher") {
           navigate("/");
         }
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       console.log(error);
       setError("Sai mật khẩu! Vui lòng thử lại nhé");

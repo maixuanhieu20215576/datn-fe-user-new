@@ -15,8 +15,13 @@ const getUserIdFromLocalStorage = () => {
   return user._id;
 };
 
+const getUserRoleFromLocalStorage = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  return user.role;
+};
+
 const formatNumber = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-export { useDeviceQueries, getUserIdFromLocalStorage, formatNumber };
+export { useDeviceQueries, getUserIdFromLocalStorage, getUserRoleFromLocalStorage, formatNumber };
