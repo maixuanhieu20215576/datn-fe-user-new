@@ -83,7 +83,7 @@ export default function ClassDetail() {
         try {
             setIsRedirecting(true);
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/payment`, {
-                price: classData.priceType === constants.priceType.byDay ? classData.price : classData.price * classData.schedule.length,
+                price: classData.priceType === constants.priceType.byDay ? classData.price * classData.schedule.length : classData.price,
                 userId,
                 classId: id,
             });
