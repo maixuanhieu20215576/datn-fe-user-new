@@ -28,18 +28,21 @@ import YourClass from "./pages/Class/YourClass";
 import TeacherStatistics from "./pages/Teacher/TeacherStatistics";
 import TeacherProfile from "./pages/Teacher/TeacherProfile";
 import ClassCalendar from "./pages/Class/ClassCalendar";
-import { getUserIdFromLocalStorage } from "./components/common/utils";
+import { useState } from "react";
 
 export default function App() {
-  const userId = getUserIdFromLocalStorage();
-
+  const [userId, setUserId] = useState(() => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user)._id : null;
+  });
+  
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
-          <Route element={userId ? <AppLayout /> : <SignIn />}>
+          <Route element={userId ? <AppLayout /> : <SignIn setUserId={setUserId}/>}>
             <Route index path="/" element={<Home />} />
 
             {/* Others Page */}
@@ -78,7 +81,7 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signin" element={<SignIn setUserId={setUserId}/>} />
           <Route path="/signup" element={<SignUp />} />
 
           {/* Fallback Route */}

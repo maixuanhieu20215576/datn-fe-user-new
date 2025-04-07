@@ -19,7 +19,6 @@ export default function UserDropdown() {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
   }
-
   return (
     <div className="relative">
       <button
@@ -27,16 +26,15 @@ export default function UserDropdown() {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src={user?.avatar} alt="User" />
+          <img src={user?.avatar || "https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"} alt="User" />
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
           {user?.fullName}
         </span>
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"

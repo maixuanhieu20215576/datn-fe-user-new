@@ -7,7 +7,7 @@ import Button from "../ui/button/Button";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
-export default function SignInForm() {
+export default function SignInForm({ setUserId }: { setUserId: (userId: string) => void }) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -28,17 +28,18 @@ export default function SignInForm() {
         }
       );
 
-      if (loginResponse.status === 200) {
+      if (loginResponse.status === 200 && loginResponse.data.user.role === "student" || loginResponse.data.user.role === "teacher") {
         const { accessToken, user } = loginResponse.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        if (user.role === "student" || user.role === "teacher") {
-          navigate("/");
-        }
+        setUserId(user._id);
+        navigate("/");
+      } else {
+        setError("Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại nhé");
       }
     } catch (error) {
       console.log(error);
-      setError("Sai mật khẩu! Vui lòng thử lại nhé");
+      setError("Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại nhé");
     }
   };
 
