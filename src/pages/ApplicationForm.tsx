@@ -27,8 +27,8 @@ export default function ApplicationForm() {
   const [fileError, setFileError] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [CV, setCV] = useState<File>();
-  const [error, setError] = useState<string>("");
-
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const handleDateChange = (date: Date[]) => {
     setDateOfBirth(date[0].toLocaleDateString()); // Handle selected date and format it
   };
@@ -63,6 +63,12 @@ export default function ApplicationForm() {
     { value: "Korean", text: "Tiếng Hàn", select: false },
     { value: "Thai", text: "Tiếng Thái", select: false },
     { value: "Spanish", text: "Tiếng Tây Ban Nha", select: false },
+    { value: "German", text: "Tiếng Đức", select: false },
+    { value: "French", text: "Tiếng Pháp", select: false },
+    { value: "Italian", text: "Tiếng Ý", select: false },
+    { value: "Russian", text: "Tiếng Nga", select: false },
+    { value: "Arabic", text: "Tiếng Ả Rập", select: false },
+    { value: "Polish", text: "Tiếng Ba Lan", select: false },
   ];
   const handleCommitmentSelectChange = (value: string) => {
     setTeachingCommitment(value);
@@ -82,7 +88,7 @@ export default function ApplicationForm() {
     }
 
     try {
-      await axios.post(
+      const response =await axios.post(
         `${import.meta.env.VITE_API_URL}/user/apply-teaching`,
         formData,
         {
@@ -90,28 +96,47 @@ export default function ApplicationForm() {
             "Content-Type": "multipart/form-data",
             userId: user._id,
           },
-          timeout: 5000,
+          timeout: 10000,
         }
       );
+      if (response.status === 200) {
+        setSuccess("Gửi đơn thành công");
+        setTimeout(() => {
+          setSuccess(null);
+        }, 3000);
+      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       console.log(err);
       setError("Lỗi khi gửi đơn, vui lòng thử lại");
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
   return (
     <div>
       <PageMeta
-        title="React.js Form Elements Dashboard | TailAdmin - React.js Admin Dashboard Template"
-        description="This is React.js Form Elements  Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Đơn đăng ký làm giảng viên"
+        description="Đơn đăng ký làm giảng viên"
       />
-      <PageBreadcrumb pageTitle="Đăng ký làm giảng viên" />
-      {error && (
+      <PageBreadcrumb pageTitle="Đơn đăng ký làm giảng viên" />
+      {success && <div className="fixed top-5 left-0 right-0 z-1000 mt-12">
         <Alert
-          variant="error"
-          title="Error"
-          message="There was an error submitting your application. Please try again."
+          variant="success"
+          title="Thành công"
+          message="Đơn đăng ký đã được gửi thành công"
         />
+      </div>
+      }
+      {error && (
+        <div className="fixed top-5 left-0 right-0 z-1000 mt-12">
+          <Alert
+            variant="error"
+            title="Lỗi"
+            message="Đã xảy ra lỗi khi gửi đơn. Vui lòng thử lại"
+          />
+        </div>
       )}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-1">
         <ComponentCard title="Đơn đăng ký">

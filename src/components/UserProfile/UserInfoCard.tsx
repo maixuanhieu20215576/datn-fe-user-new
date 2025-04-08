@@ -3,8 +3,9 @@ import { Modal } from "../../components/ui/modal/index";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import Select from "../form/Select";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -15,7 +16,17 @@ export default function UserInfoCard() {
   const [bankName, setBankName] = useState<string>(
     user?.bankPaymentInfo?.bankName || ""
   );
+  const [bankList, setBankList] = useState<string[]>([]);
 
+  useEffect(() => {
+    const fetchBankList = async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/user/get-bank-list`
+      );
+      setBankList(response.data);
+    };
+    fetchBankList();
+  }, []);
   const handleSave = async () => {
     const formData = new FormData();
     formData.append("bankAccountNumber", bankAccountNumber);
@@ -114,10 +125,14 @@ export default function UserInfoCard() {
 
               <div>
                 <Label>Ngân hàng</Label>
-                <Input
-                  type="text"
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
+                <Select
+                  onChange={(e) => setBankName(e)}
+                  placeholder="Chọn ngân hàng"
+                  options={bankList.map((bank) => ({
+                    value: bank,
+                    label: bank,
+                  }))}
+
                 />
               </div>
             </div>
