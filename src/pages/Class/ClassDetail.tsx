@@ -113,7 +113,6 @@ export default function ClassDetail() {
                     <div>
                         <ResponsiveImage
                             src={classData.thumbnail || "/default-class-image.jpg"}
-                            alt={classData.className}
                             className="w-full h-64 object-cover rounded-lg"
                         />
                     </div>
