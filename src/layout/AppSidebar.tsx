@@ -11,6 +11,7 @@ import {
   TaskIcon,
   PencilIcon,
   PieChartIcon,
+  ChatIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -62,6 +63,11 @@ const navItems: NavItem[] = [
       { name: "Tạo đơn đăng ký mới", path: "/application-form" },
       { name: "Lịch sử đơn", path: "/application-forms" },
     ],
+  },
+  {
+    icon: <ChatIcon />,
+    name: "Chat",
+    path: "/chat",
   },
   /*
  {
@@ -124,7 +130,6 @@ const AppSidebar: React.FC = () => {
 
   const userRole = getUserRoleFromLocalStorage();
 
-  console.log(userRole)
   useEffect(() => {
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {

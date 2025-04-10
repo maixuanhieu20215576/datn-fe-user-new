@@ -29,6 +29,7 @@ import TeacherStatistics from "./pages/Teacher/TeacherStatistics";
 import TeacherProfile from "./pages/Teacher/TeacherProfile";
 import ClassCalendar from "./pages/Class/ClassCalendar";
 import { useState } from "react";
+import Chat from "./pages/Chat";
 
 export default function App() {
   const [userId, setUserId] = useState(() => {
@@ -78,6 +79,7 @@ export default function App() {
             <Route path="/teacher-statistics" element={<TeacherStatistics />} />
             <Route path="/teacher-profile/:teacherId" element={<TeacherProfile />} />
             <Route path="/class-calendar" element={<ClassCalendar />} />
+            <Route path="/chat" element={<Chat />} />
           </Route>
 
           {/* Auth Layout */}
