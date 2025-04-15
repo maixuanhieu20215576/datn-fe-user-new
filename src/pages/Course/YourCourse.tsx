@@ -3,7 +3,8 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import axios from "axios";
 import { getUserIdFromLocalStorage } from "../../components/common/utils";
-
+import Button from "../../components/ui/button/Button";
+import { useNavigate } from "react-router";
 interface Course {
   _id: string | null | undefined;
   course_name: string;
@@ -21,7 +22,7 @@ interface Course {
 
 export default function YourCourse() {
   const [courses, setCourses] = useState<Course[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .post(`${import.meta.env.VITE_API_URL}/course/get-courses`, {
@@ -52,9 +53,9 @@ export default function YourCourse() {
               <h3 className="text-lg font-medium">{course.course_name}</h3>
             <p className="text-sm text-gray-600">{course.course_instr || "N/A"}</p>
             </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            <Button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" onClick={() => navigate(`/your-course/${course._id}`)}>
               Tiếp tục học
-            </button>
+            </Button>
           </div>
         ))}
       </div>

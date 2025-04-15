@@ -30,6 +30,8 @@ import TeacherProfile from "./pages/Teacher/TeacherProfile";
 import ClassCalendar from "./pages/Class/ClassCalendar";
 import { useState } from "react";
 import Chat from "./pages/Chat";
+import YourCourseDetail from "./pages/Course/YourCourseDetail";
+import UnitDetail from "./pages/Course/UnitDetail";
 
 export default function App() {
   const [userId, setUserId] = useState(() => {
@@ -73,6 +75,8 @@ export default function App() {
             <Route path="/course/:id" element={<CourseDetail />} />
 
             <Route path="/your-course" element={<YourCourse />} />
+            <Route path="/your-course/:id" element={<YourCourseDetail />} />
+            <Route path="/your-course/:id/unit/:unitId" element={<UnitDetail />} />
             <Route path="/class" element={<Class />} />
             <Route path="/class-detail/:id" element={<ClassDetail />} />
             <Route path="/your-class" element={<YourClass />} />

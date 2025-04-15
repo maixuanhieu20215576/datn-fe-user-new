@@ -20,7 +20,6 @@ interface Notification {
 }
 
 
-
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
