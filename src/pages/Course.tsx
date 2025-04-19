@@ -210,9 +210,9 @@ export default function Course() {
                     }
                     rating={course?.course_rating || 0}
                     discountPrice={`${formatPrice(
-                      (course?.price_dis || 0) * 25000
+                      (course?.price_dis || 0)
                     )} đ`}
-                    price={`${formatPrice((course?.price || 0) * 25000)} đ`}
+                    price={`${formatPrice((course?.price || 0))} đ`}
                     onClick={() => navigate(`/course/${String(course._id)}`)}
                   />
                 ))}

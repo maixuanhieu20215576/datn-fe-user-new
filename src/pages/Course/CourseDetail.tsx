@@ -35,10 +35,13 @@ export default function CourseDetail() {
 
   useEffect(() => {
     const checkPurchase = async () => {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/course/check`, {
-        userId: user._id,
-        courseId: course?._id,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/course/check`,
+        {
+          userId: user._id,
+          courseId: course?._id,
+        }
+      );
       setIsPurchase(res.data.result);
     };
     checkPurchase();
@@ -52,7 +55,7 @@ export default function CourseDetail() {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/payment`,
       {
-        price: course ? (course.price_dis ?? course.price) * 25000 : 0,
+        price: course ? course.price_dis ?? course.price : 0,
         courseId: course?._id,
         userId: user._id,
       }
@@ -119,15 +122,15 @@ export default function CourseDetail() {
                   {course.price_dis ? (
                     <>
                       <span className="text-gray-500 line-through mr-2">
-                        {formatPrice(course.price * 25000)} đ
+                        {formatPrice(course.price)} đ
                       </span>
                       <span className="text-green-600 font-bold text-2xl">
-                        {formatPrice(course.price_dis * 25000)} đ
+                        {formatPrice(course.price_dis)} đ
                       </span>
                     </>
                   ) : (
                     <span className="text-green-600 font-bold text-2xl">
-                      {formatPrice(course.price * 25000)} đ
+                      {formatPrice(course.price)} đ
                     </span>
                   )}
                 </div>
@@ -135,9 +138,9 @@ export default function CourseDetail() {
                 {/* Button */}
                 <button
                   className={`mt-4 py-2 px-4 rounded-lg transition ${
-                  isPurchase
-                    ? "bg-gray-400 text-white cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    isPurchase
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                   disabled={isPurchase}
                   onClick={redirectToPayment}
