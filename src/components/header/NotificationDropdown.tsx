@@ -12,7 +12,7 @@ interface Notification {
     avatar: string;
     fullName: string;
     role: string;
-  };
+  } | null;
   content: string;
   title: string;
   createdAt: string;
@@ -153,7 +153,7 @@ export default function NotificationDropdown() {
                   <img
                     width={40}
                     height={40}
-                    src={notification.sourceUserId.avatar}
+                    src={notification.sourceUserId?.avatar}
                     alt="User"
                     className="w-full overflow-hidden rounded-full"
                   />
@@ -163,7 +163,7 @@ export default function NotificationDropdown() {
                 <span className="block">
                   <span className="mb-1.5 block  text-theme-sm text-gray-500 dark:text-gray-400 space-x-1">
                     <span className="font-medium text-gray-800 dark:text-white/90">
-                      {notification.sourceUserId.role === 'admin' ? 'Quản trị viên' : notification.sourceUserId.fullName}
+                      {notification.sourceUserId?.role === 'admin' ? 'Quản trị viên' : notification.sourceUserId?.fullName}
                     </span>
                     <span> {notification.content}</span>
 

@@ -776,3 +776,12 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+.hide-scrollbar {
+  &::-webkit-scrollbar {
+    display: none; /* Ẩn scrollbar trong các trình duyệt hỗ trợ Webkit */
+  }
+
+  -ms-overflow-style: none; /* Cho Internet Explorer */
+  scrollbar-width: none; /* Cho Firefox */
+}

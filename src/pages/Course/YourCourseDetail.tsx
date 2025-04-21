@@ -1,11 +1,14 @@
 // src/App.js
 import React, { useEffect, useState } from "react";
-import { ChevronDownIcon } from "../../icons";
+import { CheckCircleIcon, ChevronDownIcon } from "../../icons";
 import { ChevronUpIcon } from "../../icons";
 import { useParams } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
-
+import Button from "../../components/ui/button/Button";
+import { getUserIdFromLocalStorage } from "../../components/common/utils";
+import axios from "axios";
+import Pagination from "../../components/ui/pagination/Pagination";
 interface AccordionItemProps {
   title: string;
   children: React.ReactNode;
@@ -26,6 +29,34 @@ interface Course {
       ];
     }
   ];
+}
+
+interface CourseMenuProps {
+  currentTab: string;
+  setCurrentTab: (tab: string) => void;
+}
+
+interface LearningProcess {
+  unitId: string;
+  status: string;
+}
+
+interface Comment {
+  replyComments: Comment[];
+  _id: string;
+  userId: {
+    fullName: string;
+    avatar: string;
+    _id: string;
+  };
+  courseId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  mentionUserName: string;
+  upvotes: number;
+  downvotes: number;
+  isRootComment: boolean;
 }
 
 const AccordionItem = ({ title, children }: AccordionItemProps) => {
@@ -65,28 +96,48 @@ const AccordionItem = ({ title, children }: AccordionItemProps) => {
     </div>
   );
 };
-const CourseMenu = () => {
+
+const CourseMenu: React.FC<CourseMenuProps> = ({
+  currentTab,
+  setCurrentTab,
+}) => {
   return (
-    <div className="flex space-x-4 bg-white p-4 shadow-md">
-      <button className="text-blue-500">Khóa học</button>
-      <button className="text-gray-700">Tiến độ học tập</button>
-      <button className="text-gray-700">Thảo luận</button>
+    <div className="flex space-x-4 rounded-md">
+      <Button
+        variant={currentTab === "course" ? "primary" : "outline"}
+        onClick={() => setCurrentTab("course")}
+      >
+        Khóa học
+      </Button>
+
+      <Button
+        variant={currentTab === "discussion" ? "primary" : "outline"}
+        onClick={() => setCurrentTab("discussion")}
+      >
+        Thảo luận
+      </Button>
     </div>
   );
 };
 
 const CourseContent = () => {
   const [course, setCourse] = useState<Course>();
+  const [learningProcess, setLearningProcess] = useState<LearningProcess[]>([]);
   const courseId = useParams();
   const navigate = useNavigate();
+  const userId = getUserIdFromLocalStorage();
   useEffect(() => {
     const fetchCourseUnit = async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/course/get-course-unit/${courseId.id}`
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/course/get-course-unit`,
+        {
+          courseId: courseId.id,
+          userId,
+        }
       );
-      const data = await response.json();
-      console.log(data);
-      setCourse(data);
+
+      setCourse(response.data.courseDetail);
+      setLearningProcess(response.data.learningProcess);
     };
     fetchCourseUnit();
   }, [courseId]);
@@ -102,12 +153,15 @@ const CourseContent = () => {
             {lecture.units.map((unit, cidx) => (
               <div
                 key={cidx}
-                className="text-gray-700 hover:text-gray-900 cursor-pointer px-4 py-2 hover:bg-gray-100 rounded-md dark:text-white dark:hover:bg-gray-700"
+                className="text-gray-700 hover:text-gray-900 cursor-pointer px-4 py-2 hover:bg-gray-100 rounded-md dark:text-white dark:hover:bg-gray-700 flex items-center justify-between"
                 onClick={() =>
                   navigate(`/your-course/${courseId.id}/unit/${unit._id}`)
                 }
               >
-                {unit.title}
+                <span>{unit.title}</span>
+                {learningProcess.some(
+                  (lp) => lp.unitId === unit._id && lp.status === "done"
+                ) && <CheckCircleIcon></CheckCircleIcon>}
               </div>
             ))}
           </div>
@@ -117,32 +171,242 @@ const CourseContent = () => {
   );
 };
 
-const CourseTools = () => {
+interface CourseCommentSectionProps {
+  courseId: string | undefined;
+}
+
+interface ReplyToProps {
+  mentionUserName: string;
+  commentId: string;
+  mentionUserId: string;
+}
+const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
+  courseId,
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [replyTo, setReplyTo] = useState<ReplyToProps | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const userId = getUserIdFromLocalStorage();
+
+  useEffect(() => {
+    fetchComments();
+  }, [courseId, currentPage]);
+
+  const fetchComments = async () => {
+    setLoading(true);
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/course/get-course-discussion`,
+      {
+        courseId,
+        itemPerPage: 20,
+        page: currentPage,
+      }
+    );
+    setComments(res.data.comments);
+    setTotalPages(res.data.totalPages);
+    setLoading(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+    await axios.post(`${import.meta.env.VITE_API_URL}/user/post-comment`, {
+      courseId,
+      userId,
+      content: newComment,
+      replyTo,
+    });
+    setNewComment("");
+    setReplyTo(null);
+    fetchComments();
+  };
+
+  const handleVote = async (commentId: string, type: "upvote" | "downvote") => {
+    await axios.post(`${import.meta.env.VITE_API_URL}/course/comment-vote`, {
+      commentId,
+      type,
+    });
+    fetchComments();
+  };
+
   return (
-    <div className="bg-white shadow-md p-4">
-      <h2 className="font-semibold text-xl">Công cụ khóa học</h2>
-      <button className="text-blue-500 mt-4">Các bài học đã lưu</button>
-      <div className="mt-6">
-        <p className="font-semibold">Lưu ý các mốc thời gian</p>
-        <p className="text-sm text-gray-600">Kết thúc khóa học: 01/08/2025</p>
-        <p className="text-sm text-gray-600">
-          Sau thời gian này, khóa học sẽ chuyển sang trạng thái lưu trữ.
-        </p>
-      </div>
+    <div className="space-y-6 mt-8">
+      <h3 className="text-xl font-semibold dark:text-white">Thảo luận</h3>
+
+      {loading ? (
+        <div>Đang tải bình luận...</div>
+      ) : (
+        comments.map((comment) => (
+          <div
+            key={comment._id}
+            className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow text-sm"
+          >
+            {/* Root Comment */}
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-start gap-3">
+                <img
+                  src={comment.userId?.avatar || "/default-avatar.png"}
+                  alt={comment.userId?.fullName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-medium text-gray-800 dark:text-gray-200">
+                    {comment.userId?.fullName || "Người dùng ẩn danh"}
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    {new Date(comment.createdAt).toLocaleString("vi-VN")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleVote(comment._id, "upvote")}
+                  className="text-green-600 hover:underline"
+                >
+                  👍 {comment.upvotes}
+                </button>
+                <button
+                  onClick={() => handleVote(comment._id, "downvote")}
+                  className="text-red-500 hover:underline"
+                >
+                  👎 {comment.downvotes}
+                </button>
+              </div>
+            </div>
+
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              {comment.content}
+            </p>
+
+            <button
+              onClick={() =>
+                setReplyTo({
+                  mentionUserName: comment.userId?.fullName,
+                  commentId: comment._id,
+                  mentionUserId: comment.userId?._id,
+                })
+              }
+              className="text-sm text-blue-500 hover:underline"
+            >
+              Phản hồi
+            </button>
+
+            {/* Reply Comments */}
+            {comment.replyComments?.length > 0 && (
+              <div className="mt-4 space-y-3 pl-6 border-l-2 border-gray-200 dark:border-gray-700">
+                {comment.replyComments.map((reply: Comment) => (
+                  <div key={reply._id} className="flex gap-3 items-start">
+                    <img
+                      src={reply.userId?.avatar || "/default-avatar.png"}
+                      alt={reply.userId?.fullName}
+                      className="w-7 h-7 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          {reply.userId?.fullName || "Người dùng ẩn danh"}
+                          {reply.mentionUserName && (
+                            <span className="text-xs text-gray-500 ml-2">
+                              trả lời @{reply.mentionUserName}
+                            </span>
+                          )}
+                        </p>
+                        <div className="flex gap-2 text-xs">
+                          <button
+                            onClick={() => handleVote(reply._id, "upvote")}
+                            className="text-green-600 hover:underline"
+                          >
+                            👍 {reply.upvotes}
+                          </button>
+                          <button
+                            onClick={() => handleVote(reply._id, "downvote")}
+                            className="text-red-500 hover:underline"
+                          >
+                            👎 {reply.downvotes}
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        {reply.content}
+                      </p>
+                      <button
+                        onClick={() =>
+                          setReplyTo({
+                            mentionUserName: reply.userId?.fullName,
+                            commentId: comment._id,
+                            mentionUserId: reply.userId?._id,
+                          })
+                        }
+                        className="text-xs text-blue-500 hover:underline mt-1"
+                      >
+                        Phản hồi
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-2">
+        {replyTo && (
+          <div className="text-sm text-blue-500">
+            Phản hồi bình luận của{" "}
+            {replyTo.mentionUserName || "Người dùng ẩn danh"}
+          </div>
+        )}
+        <textarea
+          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 dark:bg-gray-700 dark:text-gray-100"
+          rows={3}
+          placeholder="Nhập bình luận của bạn..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          required
+        ></textarea>
+        <div className="flex justify-between">
+          <Button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Gửi bình luận
+          </Button>
+          {replyTo && (
+            <Button
+              type="button"
+              onClick={() => setReplyTo(null)}
+              className="text-sm text-red-500"
+            >
+              Hủy trả lời
+            </Button>
+          )}
+        </div>
+      </form>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };
 
 const YourCourseDetail = () => {
+  const [currentTab, setCurrentTab] = useState<string>("course");
+  const { id } = useParams();
   return (
     <div className="flex space-x-8">
       <div className="w-2/3">
-        <CourseMenu />
-        <CourseContent />
+        <CourseMenu currentTab={currentTab} setCurrentTab={setCurrentTab} />
+        {currentTab == "course" && <CourseContent />}
+        {currentTab == "discussion" && <CourseCommentSection courseId={id} />}
       </div>
-      <div className="w-1/3">
-        <CourseTools />
-      </div>
+      <div className="w-1/3"></div>
     </div>
   );
 };

@@ -35,6 +35,9 @@ export default function UnitPage() {
     string | undefined
   >(undefined);
 
+  const [duration, setDuration] = useState(0);
+  const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
+
   const userId = getUserIdFromLocalStorage();
   useEffect(() => {
     const fetchUnitContent = async () => {
@@ -74,6 +77,33 @@ export default function UnitPage() {
   })
      */
   }
+
+  const handleMarkComplete = async () => {
+    await axios.post(
+      `${
+        import.meta.env.VITE_API_URL
+      }/course/update-course-learning-process-status`,
+      {
+        courseId: id,
+        unitId: currentUnitId,
+        userId,
+        status: "done",
+      }
+    );
+    setLearningProcessStatus("done");
+    setHasMarkedComplete(true);
+  };
+  const handleVideoProgress = (state: { playedSeconds: number }) => {
+    if (!hasMarkedComplete) {
+      const percentWatched = (state.playedSeconds / duration) * 100;
+
+      if (percentWatched >= 95) {
+        handleMarkComplete();
+        setLearningProcessStatus("done");
+        handleMarkComplete();
+      }
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -151,9 +181,10 @@ export default function UnitPage() {
               width="100%"
               height="800px"
               controls
-              // onLoadedData={() => setIsPdfLoading(false)}
-              className="rounded-lg shadow"
               url={content.fileUrl}
+              onDuration={(d) => setDuration(d)}
+              onProgress={handleVideoProgress}
+              progressInterval={1000}
             />
           )}
         </div>
@@ -173,26 +204,19 @@ export default function UnitPage() {
         </Button>
 
         {/* Đánh dấu đã học */}
-        <button
-          className={`px-6 py-2 font-semibold rounded transition 
-    ${
-      learningProcessStatus === "done"
-        ? "bg-gray-400 text-white cursor-not-allowed"
-        : "bg-green-500 text-white hover:bg-green-600"
-    }
-  `}
-          onClick={() => {
-            if (learningProcessStatus !== "done") {
-              console.log("Đánh dấu đã học xong");
-              // Ở đây bạn có thể gọi thêm API hoặc set trạng thái mới
-            }
-          }}
-          disabled={learningProcessStatus === "done"}
-        >
-          {learningProcessStatus === "done"
-            ? "Đã học xong ✔"
-            : "Đánh dấu là đã học xong ✔"}
-        </button>
+        {/* Chỉ hiện nút khi không phải video, hoặc video đã xem >= 95% */}
+        {(content?.lectureType !== "mp4" ||
+          learningProcessStatus === "done") && (
+          <Button
+            variant={learningProcessStatus === "done" ? "success" : "primary"}
+            onClick={() => handleMarkComplete()}
+            disabled={learningProcessStatus === "done"}
+          >
+            {learningProcessStatus === "done"
+              ? "Đã học xong ✔"
+              : "Đánh dấu là đã học xong ✔"}
+          </Button>
+        )}
 
         {/* Bài sau */}
 

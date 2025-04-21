@@ -123,7 +123,7 @@ export default function ClassDetail() {
                         <div className="space-y-3">
                             <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                                 <span className="font-semibold">Giảng viên:</span>
-                                <Link to={`/teacher/${classData.teacherId}`} className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+                                <Link to={`/teacher-profile/${classData.teacherId}`} className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
                                     {classData.teacherName}
                                 </Link>
                             </p>
