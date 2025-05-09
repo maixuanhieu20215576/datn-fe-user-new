@@ -38,11 +38,11 @@ export default function YourCourse() {
         description="EzLearn - Khoá học của bạn"
       />
       <PageBreadcrumb pageTitle="Khóa học của bạn" />
-      <div className="space-y-4">
+      <div className="space-y-4  overflow-hidden">
         {courses.map((course) => (
           <div
             key={course._id}
-            className="flex items-center gap-4 p-4 bg-white rounded-xl shadow border"
+            className="flex items-center gap-4 p-4 bg-white rounded-xl shadow border dark:bg-gray-800 dark:border-gray-700 transition-transform transform hover:scale-102 dark:text-white"
           >
             <img
               src={course.thumbnail}
@@ -51,7 +51,7 @@ export default function YourCourse() {
             />
             <div className="flex-1">
               <h3 className="text-lg font-medium">{course.course_name}</h3>
-            <p className="text-sm text-gray-600">{course.course_instr || "N/A"}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{course.course_instr || "N/A"}</p>
             </div>
             <Button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" onClick={() => navigate(`/your-course/${course._id}`)}>
               Tiếp tục học

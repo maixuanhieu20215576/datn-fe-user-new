@@ -309,6 +309,12 @@ export default function ChatApp() {
               <TextAreaInput
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(); // Call sendMessage directly here
+                  }
+                }}
                 className="flex-1 w-full"
               />
             )}

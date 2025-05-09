@@ -98,25 +98,46 @@ export default function Course() {
 
               <div className="flex flex-wrap space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
                 <select
-                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   defaultValue=""
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="dark:text-gray-400">
                     Lọc theo ngôn ngữ
                   </option>
-                  <option value="English">Tiếng Anh</option>
-                  <option value="Spanish">Tiếng Tây Ban Nha</option>
-                  <option value="German">Tiếng Đức</option>
-                  <option value="Japanese">Tiếng Nhật</option>
-                  <option value="Korean">Tiếng Hàn</option>
-                  <option value="French">Tiếng Pháp</option>
-                  <option value="Russian">Tiếng Nga</option>
-                  <option value="Italian">Tiếng Ý</option>
-                  <option value="Arabic">Tiếng Ả Rập</option>
-                  <option value="Poland">Tiếng Ba Lan</option>
+                  <option value="English" className="dark:text-white">
+                    Tiếng Anh
+                  </option>
+                  <option value="Spanish" className="dark:text-white">
+                    Tiếng Tây Ban Nha
+                  </option>
+                  <option value="German" className="dark:text-white">
+                    Tiếng Đức
+                  </option>
+                  <option value="Japanese" className="dark:text-white">
+                    Tiếng Nhật
+                  </option>
+                  <option value="Korean" className="dark:text-white">
+                    Tiếng Hàn
+                  </option>
+                  <option value="French" className="dark:text-white">
+                    Tiếng Pháp
+                  </option>
+                  <option value="Russian" className="dark:text-white">
+                    Tiếng Nga
+                  </option>
+                  <option value="Italian" className="dark:text-white">
+                    Tiếng Ý
+                  </option>
+                  <option value="Arabic" className="dark:text-white">
+                    Tiếng Ả Rập
+                  </option>
+                  <option value="Poland" className="dark:text-white">
+                    Tiếng Ba Lan
+                  </option>
                 </select>
+
                 <div className="flex flex-wrap space-y-4 lg:space-y-0 lg:space-x-4">
                   <input
                     type="number"
@@ -139,29 +160,42 @@ export default function Course() {
                   />
                 </div>
                 <select
-                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-</option>300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   defaultValue=""
                   value={level}
                   onChange={(e) => setLevel(e.target.value)}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="dark:text-gray-400">
                     Lọc theo cấp độ
                   </option>
-                  <option value="Beginner">Cơ bản</option>
-                  <option value="Intermediate">Nâng cao</option>
-                  <option value="Expert">Thành thạo</option>
+                  <option value="Beginner" className="dark:text-white">
+                    Cơ bản
+                  </option>
+                  <option value="Intermediate" className="dark:text-white">
+                    Nâng cao
+                  </option>
+                  <option value="Expert" className="dark:text-white">
+                    Thành thạo
+                  </option>
                 </select>
+
                 <select
-                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-                  value={sortOption} // Keep only the controlled value
-                  onChange={(e) => setSortOption(e.target.value)} // Update state on change
+                  className="dark:bg-dark-900 h-11 w-full lg:w-auto rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="dark:text-gray-400">
                     Sắp xếp theo
                   </option>
-                  <option value="0">Mới nhất</option>
-                  <option value="1">Điểm đánh giá trung bình</option>
-                  <option value="2">Số lượng người học</option>
+                  <option value="0" className="dark:text-white">
+                    Mới nhất
+                  </option>
+                  <option value="1" className="dark:text-white">
+                    Điểm đánh giá trung bình
+                  </option>
+                  <option value="2" className="dark:text-white">
+                    Số lượng người học
+                  </option>
                 </select>
               </div>
             </div>
@@ -209,10 +243,8 @@ export default function Course() {
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Animii architecto aspernatur cum et ipsum"
                     }
                     rating={course?.course_rating || 0}
-                    discountPrice={`${formatPrice(
-                      (course?.price_dis || 0)
-                    )} đ`}
-                    price={`${formatPrice((course?.price || 0))} đ`}
+                    discountPrice={`${formatPrice(course?.price_dis || 0)} đ`}
+                    price={`${formatPrice(course?.price || 0)} đ`}
                     onClick={() => navigate(`/course/${String(course._id)}`)}
                   />
                 ))}

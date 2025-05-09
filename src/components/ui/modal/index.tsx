@@ -50,8 +50,9 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   const contentClasses = isFullscreen
-    ? "w-full h-full"
-    : "relative w-full rounded-3xl bg-white  dark:bg-gray-900";
+  ? "w-full h-full max-h-[90vh] overflow-y-auto hide-scrollbar"
+  : "relative w-full max-w-[700px] rounded-3xl bg-white dark:bg-gray-900 max-h-[90vh] overflow-y-auto";
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999">

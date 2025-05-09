@@ -88,7 +88,8 @@ export default function ClassDetail() {
                 classId: id,
             });
             if (response.status === 200) {
-                window.location.href = response.data.paymentUrl;
+                // Mở trang thanh toán trong một tab mới
+                window.open(response.data.paymentUrl, '_blank');
                 setShowModal(false);
             } else {
                 alert("Đăng ký thất bại!");
@@ -174,11 +175,11 @@ export default function ClassDetail() {
                     <button
                         onClick={() => isRegistered ? navigate(`/your-class/${id}`) : setShowModal(true)}
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 dark:disabled:bg-gray-600"
-                        disabled={classData.status !== "open"}
+                        disabled={classData.status !== "open" || isRegistered}
                     >
                         {classData.status === "open"
                             ? isRegistered
-                                ? "Đã đăng ký, vào học ngay thôi! 💯"
+                                ? "Đã đăng ký"
                                 : classData.currentStudent === classData.maxStudent
                                     ? "Lớp đã đầy, không thể đăng ký 😓"
                                     : "Đăng ký ngay"

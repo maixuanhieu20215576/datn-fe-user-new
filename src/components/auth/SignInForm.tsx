@@ -6,8 +6,14 @@ import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import axios from "axios";
 import { useNavigate } from "react-router";
+// import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import React from "react";
 
-export default function SignInForm({ setUserId }: { setUserId: (userId: string) => void }) {
+export default function SignInForm({
+  setUserId,
+}: {
+  setUserId: (userId: string) => void;
+}) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -28,12 +34,16 @@ export default function SignInForm({ setUserId }: { setUserId: (userId: string) 
         }
       );
 
-      if (loginResponse.status === 200 && loginResponse.data.user.role === "student" || loginResponse.data.user.role === "teacher") {
+      if (
+        (loginResponse.status === 200 &&
+          loginResponse.data.user.role === "student") ||
+        loginResponse.data.user.role === "teacher"
+      ) {
         const { accessToken, user } = loginResponse.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
         setUserId(user._id);
-        navigate("/");
+        navigate("/profile");
       } else {
         setError("Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại nhé");
       }
@@ -42,7 +52,7 @@ export default function SignInForm({ setUserId }: { setUserId: (userId: string) 
       setError("Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại nhé");
     }
   };
-
+  // const clientId = 'YOUR_GOOGLE_CLIENT_ID'; 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault(); // Ngăn chặn form reload trang
     handleLogin({ username, password });
@@ -109,6 +119,13 @@ export default function SignInForm({ setUserId }: { setUserId: (userId: string) 
                     Đăng nhập{" "}
                   </Button>
                 </div>
+               {/* <GoogleOAuthProvider clientId={clientId}>
+                  <GoogleLogin
+                    onSuccess={handleLoginSuccess}
+                    onError={handleLoginFailure}
+                  />
+                </GoogleOAuthProvider>
+                */}
               </div>
             </form>
 

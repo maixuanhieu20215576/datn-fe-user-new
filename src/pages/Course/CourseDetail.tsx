@@ -52,6 +52,7 @@ export default function CourseDetail() {
   };
 
   const redirectToPayment = async () => {
+    setLoading(true);
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/payment`,
       {
@@ -60,8 +61,9 @@ export default function CourseDetail() {
         userId: user._id,
       }
     );
-    setLoading(true);
-    window.location.href = response.data.paymentUrl;
+    // Mở thanh toán trong một tab mới
+    window.open(response.data.paymentUrl, '_blank');
+    setLoading(false);
   };
   return (
     <>
@@ -86,13 +88,13 @@ export default function CourseDetail() {
               </div>
 
               <div className="flex flex-col space-y-4">
-                <h1 className="text-3xl font-bold text-gray-800">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
                   {course.course_name}
                 </h1>
-                <p className="text-gray-600">{course.course_instr}</p>
+                <p className="text-gray-600 dark:text-gray-300">{course.course_instr}</p>
 
                 {/* Details */}
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-200">
                   <div>
                     <strong>Số giờ học:</strong>{" "}
                     {course.course_totalHourse || 0} giờ

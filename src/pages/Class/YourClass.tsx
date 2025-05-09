@@ -36,7 +36,7 @@ const ClassCard = ({
         });
     }
     return (
-        <div className="flex items-center bg-white rounded-xl shadow p-4 mb-4">
+        <div className="flex items-center bg-white rounded-xl shadow p-4 mb-4 dark:bg-gray-800 dark:border-gray-700 transition-transform transform hover:scale-102 dark:text-white">
             <img
                 src={image}
                 alt="class"
@@ -44,8 +44,8 @@ const ClassCard = ({
             />
 
             <div className="flex-1">
-                <h2 className="text-lg font-semibold mb-1">{title}</h2>
-                <div className="text-sm text-gray-500 flex items-center gap-2 mb-1">
+                <h2 className="text-lg font-semibold mb-1 ">{title}</h2>
+                <div className="text-sm text-gray-500 flex items-center gap-2 mb-1 dark:text-gray-300">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -62,7 +62,7 @@ const ClassCard = ({
                     </svg>
                     {teacherName}{" "}
                 </div>
-                <div className="text-sm text-gray-500 flex items-center gap-2 mb-2">
+                <div className="text-sm text-gray-500 flex items-center gap-2 mb-2 dark:text-gray-300">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -79,7 +79,7 @@ const ClassCard = ({
                     </svg>
                     {language}
                 </div>
-                <div className="text-sm text-gray-500 flex items-center gap-2 mb-2">
+                <div className="text-sm text-gray-500 flex items-center gap-2 mb-2 dark:text-gray-300">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -96,7 +96,7 @@ const ClassCard = ({
                     </svg>
                     Số học viên đã đăng ký: {currentStudent}
                 </div>
-                <div className="text-sm text-red-500 flex items-center gap-2 mb-2">
+                <div className="text-sm text-red-500 flex items-center gap-2 mb-2 dark:text-red-400">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

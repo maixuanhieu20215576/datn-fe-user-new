@@ -213,15 +213,34 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-    await axios.post(`${import.meta.env.VITE_API_URL}/user/post-comment`, {
-      courseId,
-      userId,
-      content: newComment,
-      replyTo,
-    });
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/user/post-comment`,
+      {
+        courseId,
+        userId,
+        content: newComment,
+        replyTo,
+      }
+    );
+
+    const newCommentData = response.data;
+    if (replyTo) {
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === replyTo.commentId
+            ? {
+                ...comment,
+                replyComments: [...comment.replyComments, newCommentData],
+              }
+            : comment
+        )
+      );
+    } else {
+      // Nếu là bình luận gốc, thêm vào đầu danh sách
+      setComments((prevComments) => [...prevComments, newCommentData]);
+    }
     setNewComment("");
     setReplyTo(null);
-    fetchComments();
   };
 
   const handleVote = async (commentId: string, type: "upvote" | "downvote") => {
@@ -229,7 +248,36 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
       commentId,
       type,
     });
-    fetchComments();
+    setComments((prevComments) =>
+      prevComments.map((comment) => {
+        if (comment._id === commentId) {
+          return {
+            ...comment,
+            upvotes: type === "upvote" ? comment.upvotes + 1 : comment.upvotes,
+            downvotes:
+              type === "downvote" ? comment.downvotes + 1 : comment.downvotes,
+          };
+        }
+        if (comment.replyComments) {
+          return {
+            ...comment,
+            replyComments: comment.replyComments.map((reply) => {
+              if (reply._id === commentId) {
+                return {
+                  ...reply,
+                  upvotes:
+                    type === "upvote" ? reply.upvotes + 1 : reply.upvotes,
+                  downvotes:
+                    type === "downvote" ? reply.downvotes + 1 : reply.downvotes,
+                };
+              }
+              return reply;
+            }),
+          };
+        }
+        return comment;
+      })
+    );
   };
 
   return (
