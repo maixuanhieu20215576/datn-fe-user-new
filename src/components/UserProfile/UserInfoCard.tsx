@@ -6,10 +6,13 @@ import Label from "../form/Label";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "../form/Select";
+import { useAccessToken } from "../common/utils";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const user = JSON.parse(localStorage.getItem("user") || "");
+  const token = useAccessToken();
+
   const [bankAccountNumber, setBankAccountNumber] = useState<string>(
     user?.bankPaymentInfo?.bankAccountNumber || ""
   );
@@ -20,10 +23,19 @@ export default function UserInfoCard() {
 
   useEffect(() => {
     const fetchBankList = async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/get-bank-list`
-      );
-      setBankList(response.data);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user/get-bank-list`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setBankList(response.data);
+      } catch (error) {
+        console.error("Error fetching bank list:", error);
+      }
     };
     fetchBankList();
   }, []);
@@ -39,6 +51,7 @@ export default function UserInfoCard() {
           headers: {
             "Content-Type": "multipart/form-data",
             userId: user._id,
+            Authorization: `Bearer ${token}`,
           },
           timeout: 5000,
         }
@@ -132,7 +145,6 @@ export default function UserInfoCard() {
                     value: bank,
                     label: bank,
                   }))}
-
                 />
               </div>
             </div>

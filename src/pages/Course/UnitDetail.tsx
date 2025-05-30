@@ -2,7 +2,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import ReactPlayer from "react-player";
-import { getUserIdFromLocalStorage } from "../../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../../components/common/utils";
 import Button from "../../components/ui/button/Button";
 
 interface UnitContent {
@@ -13,6 +16,8 @@ interface UnitContent {
 }
 
 export default function UnitPage() {
+  const token = useAccessToken();
+
   const navigate = useNavigate();
   const { unitId, id } = useParams();
 
@@ -47,6 +52,11 @@ export default function UnitPage() {
           lectureId: currentUnitId,
           courseId: id,
           userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setContent(response.data.lectureContent);
@@ -88,6 +98,11 @@ export default function UnitPage() {
         unitId: currentUnitId,
         userId,
         status: "done",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     setLearningProcessStatus("done");

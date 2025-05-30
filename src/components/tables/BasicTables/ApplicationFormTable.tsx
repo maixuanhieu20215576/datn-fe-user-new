@@ -12,6 +12,7 @@ import { constants } from "../../../constant";
 import axios from "axios";
 import moment from "moment";
 import Select from "../../form/Select";
+import { useAccessToken } from "../../common/utils";
 
 interface ApplicationForm {
   _id: string;
@@ -35,14 +36,15 @@ const fetchApplicationForm = async ({
   filterStatus = constants.applicationStatus.all,
   page = 1,
   itemPerPage = 10,
-  userId, // Không cần ": string" ở đây
+  userId,
+  token,
 }: {
   filterStatus?: string;
   page?: number;
   itemPerPage?: number;
   userId: string;
+  token: string;
 }) => {
-  console.log(userId);
   const response = await axios.post(
     `${import.meta.env.VITE_API_URL}/admin/fetch-application-forms`,
     {
@@ -54,6 +56,7 @@ const fetchApplicationForm = async ({
     {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -61,10 +64,9 @@ const fetchApplicationForm = async ({
   return response.data;
 };
 
-
 export default function ApplicationFormTable() {
   const user = JSON.parse(localStorage.getItem("user") || "");
-
+  const token = useAccessToken();
 
   const [applicationForms, setApplicationForms] = React.useState<
     ApplicationForm[]
@@ -76,17 +78,14 @@ export default function ApplicationFormTable() {
     ApplicationForm[]
   >([]);
 
-
-
-
   React.useEffect(() => {
     const fetchData = async () => {
       const data = await fetchApplicationForm({
         itemPerPage: rowsPerPage,
         page,
         userId: user?._id,
+        token: token, // Pass the token here
       }); // Await API call
-      console.log(data);
       setApplicationForms(data);
       setFilteredApplicationForm(data);
     };

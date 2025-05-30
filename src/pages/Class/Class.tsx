@@ -2,7 +2,10 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import { SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
-import { useDeviceQueries } from "../../components/common/utils";
+import {
+  useAccessToken,
+  useDeviceQueries,
+} from "../../components/common/utils";
 import Pagination from "../../components/ui/pagination/Pagination";
 import { useNavigate } from "react-router";
 import { constants } from "../../components/common/constants";
@@ -127,11 +130,16 @@ export default function Class() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number | undefined>();
-
+  const token = useAccessToken();
   const fetchClass = async (searchValue: string) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/admin/fetch-class`,
-      { searchValue: searchValue, page }
+      { searchValue: searchValue, page },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     setClasses(response.data.classes);
     setTotalPages(Math.ceil(response.data.totalClasses / 18));
@@ -140,12 +148,10 @@ export default function Class() {
   const handleClassSearch = () => {
     fetchClass(searchValue);
   };
-  
+
   useEffect(() => {
     fetchClass(searchValue);
   }, [page]);
-
-
 
   const handlePageChange = (pageNumber: SetStateAction<number>) => {
     if (
@@ -241,10 +247,10 @@ export default function Class() {
             buttonLabel="Xem lớp học"
             language={
               constants.languages[
-              (cls.language.charAt(0).toUpperCase() +
-                cls.language
-                  .slice(1)
-                  .toLowerCase()) as keyof typeof constants.languages
+                (cls.language.charAt(0).toUpperCase() +
+                  cls.language
+                    .slice(1)
+                    .toLowerCase()) as keyof typeof constants.languages
               ] || "Unknown"
             }
             currentStudent={cls.currentStudent}

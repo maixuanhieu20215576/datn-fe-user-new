@@ -5,7 +5,7 @@ import Card from "../components/ui/card/Card";
 import Pagination from "../components/ui/pagination/Pagination";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useDeviceQueries } from "../components/common/utils";
+import { useAccessToken, useDeviceQueries } from "../components/common/utils";
 
 interface Course {
   _id: string | null | undefined;
@@ -35,7 +35,7 @@ export default function Course() {
 
   const navigate = useNavigate();
   const deviceQueries = useDeviceQueries();
-
+  const token = useAccessToken();
   const fetchCourses = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/course/get-courses`,
@@ -47,6 +47,11 @@ export default function Course() {
         priceTo,
         page,
         searchText,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     setCourses(response.data.courses);

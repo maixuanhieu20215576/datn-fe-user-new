@@ -6,7 +6,10 @@ import PageMeta from "../components/common/PageMeta";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { Language, QuestionMark, TimeIcon } from "../icons";
 import Modal from "../components/ui/modal";
-import { getUserIdFromLocalStorage } from "../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../components/common/utils";
 
 interface Test {
   _id: string;
@@ -38,10 +41,18 @@ export default function Test() {
   const [historyData, setHistoryData] = useState<TestHistoryItem[]>([]);
 
   const navigate = useNavigate();
-
+  const token = useAccessToken();
   useEffect(() => {
     axios
-      .post(`${import.meta.env.VITE_API_URL}/test/get-tests`)
+      .post(
+        `${import.meta.env.VITE_API_URL}/test/get-tests`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => setTests(res.data));
   }, []);
 
@@ -71,6 +82,11 @@ export default function Test() {
         {
           testId,
           userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setHistoryData(res.data || []);

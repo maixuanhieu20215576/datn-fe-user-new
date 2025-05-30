@@ -5,7 +5,10 @@ import { MailIcon, PaperPlaneIcon } from "../icons";
 import TextAreaInput from "../components/form/form-elements/TextAreaInput";
 import io, { Socket } from "socket.io-client";
 import axios from "axios";
-import { getUserIdFromLocalStorage } from "../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../components/common/utils";
 import moment from "moment";
 import FileInput from "../components/form/input/FileInput";
 import ResponsiveImage from "../components/ui/images/ResponsiveImage";
@@ -37,7 +40,7 @@ export default function ChatApp() {
   const [isFileInput, setIsFileInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-
+  const token = useAccessToken();
   const userId = getUserIdFromLocalStorage();
 
   useEffect(() => {
@@ -61,7 +64,12 @@ export default function ChatApp() {
       try {
         await axios
           .get(
-            `${import.meta.env.VITE_API_URL}/user/fetch-chat-history/${userId}`
+            `${import.meta.env.VITE_API_URL}/user/fetch-chat-history/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           )
           .then((res) => {
             setChats(res.data);
@@ -79,7 +87,12 @@ export default function ChatApp() {
       formData.append("file", selectedFile);
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/user/upload-file`,
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const fileUrl = response.data;
       setSelectedFile(null);
@@ -117,6 +130,11 @@ export default function ChatApp() {
         {
           userId: userId,
           opponentId: opponentId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setMessages(res.data);

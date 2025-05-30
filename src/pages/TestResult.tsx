@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import Button from "../components/ui/button/Button";
+import { useAccessToken } from "../components/common/utils";
 
 interface Question {
   _id: string;
@@ -24,6 +25,7 @@ interface QuestionLog {
 }
 
 export default function TestResult() {
+  const token = useAccessToken();
   const [test, setTest] = useState<Test>();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionLogs, setQuestionLogs] = useState<QuestionLog[]>([]);
@@ -34,7 +36,12 @@ export default function TestResult() {
   const getTestResult = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/test/get-test-result`,
-      { testResultId }
+      { testResultId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     setTest(response.data.test);
     setQuestions(response.data.questions);

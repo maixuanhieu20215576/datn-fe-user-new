@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import axios from "axios";
-import { getUserIdFromLocalStorage } from "../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../components/common/utils";
 import Button from "../components/ui/button/Button";
 import Modal from "../components/ui/modal";
 
@@ -22,6 +25,7 @@ interface Test {
 
 export default function JoinTest() {
   const navigate = useNavigate();
+  const token = useAccessToken();
   const [test, setTest] = useState<Test>();
   const [questions, setQuestions] = useState<[Question]>();
   const [timeLeft, setTimeLeft] = useState<number | undefined>();
@@ -42,7 +46,12 @@ export default function JoinTest() {
   const getTestInfo = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/test/get-test-question`,
-      { testId, userId }
+      { testId, userId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     setTest(response.data.test);
     setQuestions(response.data.questions);
@@ -80,11 +89,19 @@ export default function JoinTest() {
     }
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/test/submit-answer`, {
-        testResultId,
-        questionId,
-        selectedAnswer,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/test/submit-answer`,
+        {
+          testResultId,
+          questionId,
+          selectedAnswer,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setAnswers(draftAnswers);
     } catch (error) {
       console.error("❌ Lỗi khi nộp bài:", error);
@@ -94,9 +111,17 @@ export default function JoinTest() {
 
   const handleSubmitTest = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/test/submit-test`, {
-        testResultId,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/test/submit-test`,
+        {
+          testResultId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       alert("Nộp bài thành công!");
       setShowModal(false);
       navigate(`/test-result/${testResultId}`);

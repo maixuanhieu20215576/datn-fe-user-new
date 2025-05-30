@@ -4,6 +4,7 @@ import PageMeta from "../../components/common/PageMeta";
 import { useParams } from "react-router";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useAccessToken } from "../../components/common/utils";
 
 interface Course {
   _id: string | null | undefined;
@@ -26,6 +27,7 @@ export default function CourseDetail() {
   const [loading, setLoading] = useState(false);
   const [isPurchase, setIsPurchase] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "");
+    const token = useAccessToken();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/course/${id}`)
@@ -40,6 +42,10 @@ export default function CourseDetail() {
         {
           userId: user._id,
           courseId: course?._id,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setIsPurchase(res.data.result);

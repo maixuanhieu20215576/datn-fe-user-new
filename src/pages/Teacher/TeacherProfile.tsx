@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
-import { getUserIdFromLocalStorage } from "../../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../../components/common/utils";
 import { Link, useParams } from "react-router";
 import Alert from "../../components/ui/alert/Alert";
 import CommentSection from "../UiElements/CommentSection";
@@ -48,6 +51,7 @@ export default function TeacherProfile() {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const userId = getUserIdFromLocalStorage();
+  const token = useAccessToken();
 
   useEffect(() => {
     if (error) {
@@ -64,7 +68,12 @@ export default function TeacherProfile() {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/teacher/profile/${teacherId}`
+          `${import.meta.env.VITE_API_URL}/teacher/profile/${teacherId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setProfileData(response.data);
         setError(null);
@@ -96,8 +105,12 @@ export default function TeacherProfile() {
               page: currentPage,
               limit: 5,
             },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
+
         setComments(response.data.comments);
         setTotalPages(response.data.totalPages);
         setError(null);
@@ -130,6 +143,11 @@ export default function TeacherProfile() {
           teacherId: teacherId,
           userId,
           teacherProfile: profileData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (response.data.success) {

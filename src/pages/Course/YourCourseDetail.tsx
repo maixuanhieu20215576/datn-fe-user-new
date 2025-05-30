@@ -6,7 +6,10 @@ import { useParams } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { getUserIdFromLocalStorage } from "../../components/common/utils";
+import {
+  getUserIdFromLocalStorage,
+  useAccessToken,
+} from "../../components/common/utils";
 import axios from "axios";
 import Pagination from "../../components/ui/pagination/Pagination";
 interface AccordionItemProps {
@@ -126,6 +129,8 @@ const CourseContent = () => {
   const courseId = useParams();
   const navigate = useNavigate();
   const userId = getUserIdFromLocalStorage();
+  const token = useAccessToken();
+
   useEffect(() => {
     const fetchCourseUnit = async () => {
       const response = await axios.post(
@@ -133,6 +138,11 @@ const CourseContent = () => {
         {
           courseId: courseId.id,
           userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -190,7 +200,7 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const userId = getUserIdFromLocalStorage();
-
+  const token = useAccessToken();
   useEffect(() => {
     fetchComments();
   }, [courseId, currentPage]);
@@ -203,6 +213,11 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
         courseId,
         itemPerPage: 20,
         page: currentPage,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     setComments(res.data.comments);
@@ -220,6 +235,11 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
         userId,
         content: newComment,
         replyTo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -244,10 +264,18 @@ const CourseCommentSection: React.FC<CourseCommentSectionProps> = ({
   };
 
   const handleVote = async (commentId: string, type: "upvote" | "downvote") => {
-    await axios.post(`${import.meta.env.VITE_API_URL}/course/comment-vote`, {
-      commentId,
-      type,
-    });
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/course/comment-vote`,
+      {
+        commentId,
+        type,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     setComments((prevComments) =>
       prevComments.map((comment) => {
         if (comment._id === commentId) {

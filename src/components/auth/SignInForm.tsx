@@ -40,7 +40,7 @@ export default function SignInForm({
         loginResponse.data.user.role === "teacher"
       ) {
         const { accessToken, user } = loginResponse.data;
-        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("accessToken", JSON.stringify(accessToken));
         localStorage.setItem("user", JSON.stringify(user));
         setUserId(user._id);
         navigate("/profile");
