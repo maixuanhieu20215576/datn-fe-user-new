@@ -106,13 +106,13 @@ const ClassCard = ({
         </div>
         <div
           className={
-            classIsEnded
+            !classIsEnded
               ? "text-sm text-red-500 flex items-center gap-2 mb-2 dark:text-red-400"
               : "text-sm text-green-500 flex items-center gap-2 mb-2 dark:text-green-300"
           }
         >
-          {classIsEnded ? <ClockIcon /> : <CheckBadgeIcon />}
-          {classIsEnded
+          {!classIsEnded ? <ClockIcon /> : <CheckBadgeIcon />}
+          {!classIsEnded
             ? `Buổi học sắp tới: ${followingClassTime}`
             : "Đã hoàn thành việc giảng dạy"}
         </div>
@@ -121,7 +121,7 @@ const ClassCard = ({
         </Button>
         <Button
           onClick={handleCreateTest}
-          disabled={!classIsEnded}
+          disabled={classIsEnded}
           variant="success"
           className="ml-3"
         >
