@@ -25,7 +25,7 @@ import YourCourse from "./pages/Course/YourCourse";
 import Class from "./pages/Class/Class";
 import ClassDetail from "./pages/Class/ClassDetail";
 import YourClass from "./pages/Class/YourClass";
-import TeacherStatistics from "./pages/Teacher/TeacherStatistics";
+import RevenueStatistics from "./pages/Teacher/RevenueStatistics";
 import TeacherProfile from "./pages/Teacher/TeacherProfile";
 import ClassCalendar from "./pages/Class/ClassCalendar";
 import { useState } from "react";
@@ -35,20 +35,25 @@ import UnitDetail from "./pages/Course/UnitDetail";
 import Test from "./pages/Test";
 import JoinTest from "./pages/JoinTest";
 import TestResult from "./pages/TestResult";
+import ClassManagement from "./pages/ClassManagement";
+import CreateTest from "./pages/CreateTest";
+import TeachingStatistics from "./pages/Teacher/TeachingStatistics";
 
 export default function App() {
   const [userId, setUserId] = useState(() => {
     const user = localStorage.getItem("user");
     return user ? JSON.parse(user)._id : null;
   });
-  
+
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
-          <Route element={userId ? <AppLayout /> : <SignIn setUserId={setUserId}/>}>
+          <Route
+            element={userId ? <AppLayout /> : <SignIn setUserId={setUserId} />}
+          >
             <Route index path="/" element={<Home />} />
 
             {/* Others Page */}
@@ -73,27 +78,48 @@ export default function App() {
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
+            {/* Course For Management */}
 
             <Route path="/course" element={<Course />} />
             <Route path="/course/:id" element={<CourseDetail />} />
 
             <Route path="/your-course" element={<YourCourse />} />
             <Route path="/your-course/:id" element={<YourCourseDetail />} />
-            <Route path="/your-course/:id/unit/:unitId" element={<UnitDetail />} />
+            <Route
+              path="/your-course/:id/unit/:unitId"
+              element={<UnitDetail />}
+            />
+            {/* Class For Student */}
             <Route path="/class" element={<Class />} />
             <Route path="/class-detail/:id" element={<ClassDetail />} />
             <Route path="/your-class" element={<YourClass />} />
-            <Route path="/teacher-statistics" element={<TeacherStatistics />} />
-            <Route path="/teacher-profile/:teacherId" element={<TeacherProfile />} />
             <Route path="/class-calendar" element={<ClassCalendar />} />
+
+            {/* Teaching Management */}
+
+            <Route path="/revenue-statistics" element={<RevenueStatistics />} />
+            <Route path="/teaching-statistics" element={<TeachingStatistics />} />
+
+            <Route
+              path="/teacher-profile/:teacherId"
+              element={<TeacherProfile />}
+            />
+            <Route path="/class-management" element={<ClassManagement />} />
+            <Route
+              path="/create-test/teacher/:teacherId/class/:classId"
+              element={<CreateTest />}
+            />
+            {/* Chat */}
             <Route path="/chat" element={<Chat />} />
-            <Route path="/test" element={<Test/>} />
-            <Route path="/tests/:testId" element={<JoinTest/>} />
-            <Route path="/test-result/:testResultId" element={<TestResult/>} />
+
+            {/* Test For Student */}
+            <Route path="/test" element={<Test />} />
+            <Route path="/tests/:testId" element={<JoinTest />} />
+            <Route path="/test-result/:testResultId" element={<TestResult />} />
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn setUserId={setUserId}/>} />
+          <Route path="/signin" element={<SignIn setUserId={setUserId} />} />
           <Route path="/signup" element={<SignUp />} />
 
           {/* Fallback Route */}

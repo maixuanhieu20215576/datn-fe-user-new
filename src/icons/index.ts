@@ -55,6 +55,10 @@ import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
 import { ReactComponent as PuzzlePieceIcon } from "./puzzle-piece.svg?react";
 import { ReactComponent as QuestionMark } from "./question-mark.svg?react";
 import { ReactComponent as Language } from "./language.svg?react";
+import { ReactComponent as PencilSquareIcon } from "./pencil-square.svg?react";
+import { ReactComponent as ClockIcon } from "./clock.svg?react";
+import { ReactComponent as CheckBadgeIcon } from "./check-badge.svg?react";
+import { ReactComponent as MemberIcon } from "./member.svg?react";
 
 export {
   ErrorHexaIcon,
@@ -114,4 +118,8 @@ export {
   PuzzlePieceIcon,
   QuestionMark,
   Language,
+  PencilSquareIcon,
+  ClockIcon,
+  CheckBadgeIcon,
+  MemberIcon,
 };
