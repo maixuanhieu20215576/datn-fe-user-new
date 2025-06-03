@@ -16,7 +16,6 @@ import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
-import Home from "./pages/Dashboard/Home";
 import ApplicationForms from "./pages/Forms/ApplicationForms";
 import ApplicationForm from "./pages/ApplicationForm";
 import Course from "./pages/Course";
@@ -54,7 +53,7 @@ export default function App() {
           <Route
             element={userId ? <AppLayout /> : <SignIn setUserId={setUserId} />}
           >
-            <Route index path="/" element={<Home />} />
+            <Route index path="/" element={<UserProfiles />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

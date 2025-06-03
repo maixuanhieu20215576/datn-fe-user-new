@@ -20,12 +20,12 @@ export default function AuthLayout({
                 <img
                   width={75}
                   height={48}
-                  src="/images/logo/Logo.jpeg"
+                  src="/images/logo/new-logo.svg"
                   alt="Logo"
                 />
               </Link>
-              <p className="text-center text-gray-400 dark:text-white/60">
-                Học ngoại ngữ dễ dàng hơn bao giờ hết !{" "}
+              <p className="text-center text-gray-400 dark:text-white/80">
+               EzLearn - Học ngoại ngữ thật dễ dàng !{" "}
               </p>
             </div>
           </div>
