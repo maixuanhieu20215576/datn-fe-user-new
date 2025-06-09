@@ -91,13 +91,12 @@ const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
     name: "Thống kê",
-      subItems: [
+    subItems: [
       { name: "Thống kê doanh thu", path: "/revenue-statistics" },
       { name: "Thống kê lớp học", path: "/teaching-statistics" },
     ],
-    
   },
-    {
+  {
     icon: <PencilSquareIcon />,
     name: "Quản lý lớp học",
     path: "/class-management",

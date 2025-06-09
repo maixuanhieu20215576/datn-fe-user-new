@@ -27,10 +27,14 @@ export default function CourseDetail() {
   const [loading, setLoading] = useState(false);
   const [isPurchase, setIsPurchase] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "");
-    const token = useAccessToken();
+  const token = useAccessToken();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/course/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/course/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setCourse(data.course));
   }, [id]);
@@ -42,7 +46,8 @@ export default function CourseDetail() {
         {
           userId: user._id,
           courseId: course?._id,
-        }, {
+        },
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -68,7 +73,7 @@ export default function CourseDetail() {
       }
     );
     // Mở thanh toán trong một tab mới
-    window.open(response.data.paymentUrl, '_blank');
+    window.open(response.data.paymentUrl, "_blank");
     setLoading(false);
   };
   return (
@@ -97,7 +102,9 @@ export default function CourseDetail() {
                 <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
                   {course.course_name}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300">{course.course_instr}</p>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {course.course_instr}
+                </p>
 
                 {/* Details */}
                 <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-200">
