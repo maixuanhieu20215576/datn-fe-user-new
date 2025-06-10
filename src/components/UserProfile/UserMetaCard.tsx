@@ -9,8 +9,10 @@ import imageCompression from "browser-image-compression";
 import axios from "axios";
 import { Modal } from "../../components/ui/modal/index";
 import LoadingSpinner from "../common/LoadingSpinner";
+import { useAccessToken } from "../common/utils";
 
 export default function UserMetaCard() {
+  const token = useAccessToken();
   const { isOpen, openModal, closeModal } = useModal();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -83,6 +85,7 @@ export default function UserMetaCard() {
           headers: {
             "Content-Type": "multipart/form-data",
             userId: user._id,
+            Authorization: `Bearer ${token}`,
           },
           timeout: 5000,
         }
