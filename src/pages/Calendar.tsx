@@ -8,6 +8,7 @@ import Modal from "../components/ui/modal";
 import { useModal } from "../hooks/useModal";
 import PageMeta from "../components/common/PageMeta";
 import moment from "moment";
+import Button from "../components/ui/button/Button";
 interface CalendarEvent extends EventInput {
   extendedProps: {
     calendar: string;
@@ -98,25 +99,24 @@ const Calendar: React.FC<{ calendarInput: CalendarInputItem[] }> = ({ calendarIn
 
       <Modal isOpen={isOpen} onClose={closeModal}>
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">{selectedEvent?.title}</h3>
+          <h3 className="text-lg font-semibold mb-4 dark:white">{selectedEvent?.title}</h3>
           <div className="space-y-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-200">
               <span className="font-medium">Thời gian:</span> {moment(selectedEvent?.start?.toString()).format('HH:mm')} - {moment(selectedEvent?.end?.toString()).format('HH:mm')}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-200">
               <span className="font-medium">Ngày:</span> {moment(selectedEvent?.start?.toString()).format('DD/MM/YYYY')}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-200">
               <span className="font-medium">Mã lớp:</span> {selectedEvent?.extendedProps.classId}
             </p>
           </div>
           <div className="mt-6 flex justify-end">
-            <button
+            <Button
               onClick={closeModal}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
             >
-              Close
-            </button>
+              Đóng
+            </Button>
           </div>
         </div>
       </Modal>
