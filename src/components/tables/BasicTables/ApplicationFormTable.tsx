@@ -80,14 +80,14 @@ export default function ApplicationFormTable() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchApplicationForm({
+      const { applicationForms } = await fetchApplicationForm({
         itemPerPage: rowsPerPage,
         page,
         userId: user?._id,
         token: token, // Pass the token here
       }); // Await API call
-      setApplicationForms(data);
-      setFilteredApplicationForm(data);
+      setApplicationForms(applicationForms);
+      setFilteredApplicationForm(applicationForms);
     };
 
     fetchData();
