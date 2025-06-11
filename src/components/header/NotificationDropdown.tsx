@@ -5,10 +5,7 @@ import { Link } from "react-router";
 import axios from "axios";
 import Switch from "../form/switch/Switch";
 import moment from "moment";
-import {
-  getUserIdFromLocalStorage,
-  useAccessToken,
-} from "../common/utils";
+import { getUserIdFromLocalStorage, useAccessToken } from "../common/utils";
 interface Notification {
   _id: string;
   sourceUserId: {
@@ -193,7 +190,10 @@ export default function NotificationDropdown() {
                   <img
                     width={40}
                     height={40}
-                    src={notification.sourceUserId?.avatar}
+                    src={
+                      notification.sourceUserId?.avatar ||
+                      "https://i.imgur.com/4df6B8R.jpeg"
+                    }
                     alt="User"
                     className="w-full overflow-hidden rounded-full"
                   />
