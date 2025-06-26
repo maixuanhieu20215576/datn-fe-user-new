@@ -14,8 +14,11 @@ import Button from "../components/ui/button/Button";
 import Checkbox from "../components/form/input/Checkbox";
 import axios from "axios";
 import Alert from "../components/ui/alert/Alert";
+import { useAccessToken } from "../components/common/utils";
 
 export default function ApplicationForm() {
+  const token = useAccessToken();
+
   const user = JSON.parse(localStorage.getItem("user") || "");
   const [fullName, setFullName] = useState<string>(user?.fullName);
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -95,6 +98,7 @@ export default function ApplicationForm() {
           headers: {
             "Content-Type": "multipart/form-data",
             userId: user._id,
+            Authorization: `Bearer ${token}`,
           },
           timeout: 10000,
         }
