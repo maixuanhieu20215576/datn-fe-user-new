@@ -18,6 +18,15 @@ interface Question {
   currentAnswer: number;
 }
 
+interface QuestionWithSubQuestions {
+  _id: string;
+  readingText: string;
+  audioUrl: string;
+  childQuestionIds: string[];
+  questionType: string;
+}
+
+
 interface Test {
   name: string;
   timeLimitByMinutes: number;
@@ -27,8 +36,11 @@ export default function JoinTest() {
   const navigate = useNavigate();
   const token = useAccessToken();
   const [test, setTest] = useState<Test>();
-  const [questions, setQuestions] = useState<[Question]>();
+  const [questions, setQuestions] = useState<any[]>();
+  const [singleQuestions, setSingleQuestions] = useState<[Question] | undefined>(undefined);
+  const [subQuestions, setSubQuestions] = useState<[Question] | undefined>(undefined);
   const [timeLeft, setTimeLeft] = useState<number | undefined>();
+  const [questionWithSubQuestions, setQuestionWithSubQuestions] = useState<any[]>()
   const [answers, setAnswers] = useState<{
     [questionId: string]: number;
   }>({});
@@ -54,13 +66,18 @@ export default function JoinTest() {
       }
     );
     setTest(response.data.test);
-    setQuestions(response.data.questions);
+    setSingleQuestions(response.data.questions);
+    setSubQuestions(response.data.subQuestions);
+    const tempQuestions = [...response.data.questions, ...response.data.subQuestions]
+    setQuestions(tempQuestions);
+    setQuestionWithSubQuestions(response.data.questionWithSubQuestions)
     setTimeLeft(response.data.timeLeft);
     const initialAnswers: { [questionId: string]: number } = {};
-    response.data.questions.forEach((q: Question) => {
+    tempQuestions.forEach((q: any) => {
       initialAnswers[q._id] = q.currentAnswer || 0;
     });
     setDraftAnswers(initialAnswers);
+    console.log(answers)
     setAnswers(initialAnswers);
     setTestResultId(response.data.testResultId);
   };
@@ -151,6 +168,46 @@ export default function JoinTest() {
     return;
   }, [timeLeft]);
 
+  const renderSubQuestions = (childQuestionIds: string[]) => {
+    const filteredSubQuestions = subQuestions?.filter((sq) =>
+      childQuestionIds.includes(sq._id)
+    );
+    return filteredSubQuestions?.map((subQuestion, index) => (
+      <div key={subQuestion._id} id={`question-${subQuestion._id}`}
+        className="mb-6 border border-gray-300 dark:border-gray-600 rounded-lg p-4 mt-2">
+        <h2 className="font-semibold mb-3 dark:text-white">
+          Câu hỏi con {index + 1}: {subQuestion.question}
+        </h2>
+
+        <div className="space-y-2 ml-2">
+          {["choice_1", "choice_2", "choice_3", "choice_4"].map((key, idx) => (
+            <label key={key} className="block dark:text-white">
+              <input
+                type="radio"
+                name={`subQuestion-${subQuestion._id}`}
+                value={idx + 1}
+                className="mr-2"
+                checked={draftAnswers[subQuestion._id] === idx + 1}
+                onChange={() => {
+                  setDraftAnswers({ ...draftAnswers, [subQuestion._id]: idx + 1 });
+                }}
+              />
+              {String.fromCharCode(65 + idx)}.{" "}
+              {subQuestion[key as "choice_1" | "choice_2" | "choice_3" | "choice_4"]}
+            </label>
+          ))}
+        </div>
+        <Button
+          onClick={() => handleSubmit(subQuestion._id)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded m-3"
+        >
+          Nộp câu trả lời
+        </Button>
+      </div>
+    ));
+  };
+
+
   return (
     <div className="flex max-w-6xl mx-auto p-6 gap-6">
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -215,7 +272,7 @@ export default function JoinTest() {
           📝 {test?.name}
         </h1>
 
-        {questions?.map((q, index) => (
+        {singleQuestions?.map((q, index) => (
           <div
             key={q._id}
             id={`question-${q._id}`}
@@ -237,14 +294,12 @@ export default function JoinTest() {
                       checked={draftAnswers[q._id] === idx + 1}
                       onChange={() => {
                         setDraftAnswers({ ...draftAnswers, [q._id]: idx + 1 });
-                        console.log(q);
-                        console.log(answers);
                       }}
                     />
                     {String.fromCharCode(65 + idx)}.{" "}
                     {
                       q[
-                        key as "choice_1" | "choice_2" | "choice_3" | "choice_4"
+                      key as "choice_1" | "choice_2" | "choice_3" | "choice_4"
                       ]
                     }
                   </label>
@@ -257,6 +312,24 @@ export default function JoinTest() {
             >
               Nộp câu trả lời
             </Button>
+          </div>
+        ))}
+
+        {questionWithSubQuestions?.map((qws, index) => (
+          <div
+            key={qws._id}
+            id={`question-${qws._id}`}
+            className="mb-6 border border-gray-300 dark:border-gray-600 rounded-lg p-4"
+          >
+            <h3 className="font-semibold mb-3 dark:text-white">{index + 1}. {qws.questionType === "Listening" ? "Câu hỏi nghe" : "Câu hỏi đọc"}</h3>
+
+            {qws.audioUrl && <audio controls className="w-full mt-4">
+              <source src={qws.audioUrl} type="audio/mp3" />
+              Trình duyệt của bạn không hỗ trợ phát âm thanh.
+            </audio>}
+            {qws.readingText && <p className="mt-4 dark:text-white">{qws.readingText}</p>}
+            {renderSubQuestions(qws.childQuestionIds)}
+
           </div>
         ))}
         <div className="flex justify-center">
