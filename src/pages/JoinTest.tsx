@@ -18,15 +18,6 @@ interface Question {
   currentAnswer: number;
 }
 
-interface QuestionWithSubQuestions {
-  _id: string;
-  readingText: string;
-  audioUrl: string;
-  childQuestionIds: string[];
-  questionType: string;
-}
-
-
 interface Test {
   name: string;
   timeLimitByMinutes: number;
